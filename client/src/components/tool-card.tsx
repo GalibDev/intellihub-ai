@@ -1,14 +1,16 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, Star } from "lucide-react";
 import { toast } from "sonner";
-import { api } from "@/services/api";
+import { api, ApiClientError } from "@/services/api";
 import { Badge, Button, Card } from "./ui";
 import { money } from "@/lib/utils";
 import type { Tool } from "@/types";
 
 export function ToolCard({ tool }: { tool: Tool }) {
+  const [purchasing, setPurchasing] = useState(false);
   const favorite = async () => {
     try {
       await api.post(`/favorites/${tool._id}`);
@@ -24,6 +26,24 @@ export function ToolCard({ tool }: { tool: Tool }) {
       ? "/ai/image-generator"
       : `/tools/${tool.slug}`;
   const isImageGenerator = tool.slug === "ai-image-generator";
+  const purchase = async () => {
+    setPurchasing(true);
+    try {
+      const checkout = await api.post<{ url: string }>(
+        `/billing/tools/${tool._id}/checkout`,
+      );
+      window.location.assign(checkout.url);
+    } catch (error) {
+      if (error instanceof ApiClientError && error.status === 401) {
+        window.location.assign(
+          `/login?next=${encodeURIComponent(`/tools/${tool.slug}`)}`,
+        );
+        return;
+      }
+      toast.error(error instanceof Error ? error.message : "Checkout failed");
+      setPurchasing(false);
+    }
+  };
   return (
     <Card className="group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="relative aspect-[16/10] overflow-hidden bg-lavender">
@@ -73,6 +93,21 @@ export function ToolCard({ tool }: { tool: Tool }) {
               <Link href="/ai/image-generator#pricing">
                 <Button className="h-9 px-3">Purchase</Button>
               </Link>
+            </div>
+          ) : tool.price > 0 ? (
+            <div className="flex gap-2">
+              <Link href={href}>
+                <Button variant="secondary" className="h-9 px-3">
+                  Details
+                </Button>
+              </Link>
+              <Button
+                className="h-9 px-3"
+                loading={purchasing}
+                onClick={purchase}
+              >
+                Purchase
+              </Button>
             </div>
           ) : (
             <Link href={href}>

@@ -215,6 +215,11 @@ router.post(
   asyncHandler(images.generate),
 );
 router.post("/billing/checkout", authenticate, asyncHandler(billing.checkout));
+router.post(
+  "/billing/tools/:toolId/checkout",
+  authenticate,
+  asyncHandler(billing.checkoutTool),
+);
 
 const upload = multer({
   storage: multer.memoryStorage(),

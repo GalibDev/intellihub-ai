@@ -129,6 +129,33 @@ const favoriteSchema = new Schema(
 );
 favoriteSchema.index({ tool: 1, user: 1 }, { unique: true });
 
+const toolSubscriptionSchema = new Schema(
+  {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    tool: {
+      type: Schema.Types.ObjectId,
+      ref: "Tool",
+      required: true,
+      index: true,
+    },
+    stripeCustomerId: { type: String, required: true },
+    stripeSubscriptionId: { type: String, required: true, unique: true },
+    status: {
+      type: String,
+      enum: ["inactive", "active", "trialing", "past_due", "canceled"],
+      default: "inactive",
+    },
+    currentPeriodEnd: Date,
+  },
+  baseOptions,
+);
+toolSubscriptionSchema.index({ user: 1, tool: 1 }, { unique: true });
+
 const conversationSchema = new Schema(
   {
     user: {
@@ -279,6 +306,10 @@ export const Review = (mongoose.models.Review ??
 export const Favorite = (mongoose.models.Favorite ??
   mongoose.model("Favorite", favoriteSchema)) as mongoose.Model<
   InferSchemaType<typeof favoriteSchema>
+>;
+export const ToolSubscription = (mongoose.models.ToolSubscription ??
+  mongoose.model("ToolSubscription", toolSubscriptionSchema)) as mongoose.Model<
+  InferSchemaType<typeof toolSubscriptionSchema>
 >;
 export const Conversation = (mongoose.models.Conversation ??
   mongoose.model("Conversation", conversationSchema)) as mongoose.Model<
