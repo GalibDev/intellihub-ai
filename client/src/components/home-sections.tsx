@@ -114,8 +114,10 @@ export function Hero() {
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <div
-        className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${slide.glow}`}
+      <motion.div
+        className={`hero-glow pointer-events-none absolute -inset-[15%] bg-gradient-to-br ${slide.glow}`}
+        animate={{ scale: [1, 1.08, 1], x: [0, 18, 0], y: [0, -10, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
       <div className="container relative grid h-full items-center gap-7 py-7 md:grid-cols-[1.08fr_.92fr] lg:gap-12">
         <motion.div
@@ -173,14 +175,19 @@ export function Hero() {
         >
           <div className="absolute inset-12 rounded-full bg-brand/25 blur-3xl" />
           <div className="relative rounded-[2rem] border border-white/80 bg-white/60 p-3 shadow-2xl shadow-brand/15 backdrop-blur">
-            <Image
-              src="/images/intellihub-hero.png"
-              width={1254}
-              height={1254}
-              priority={active === 0}
-              alt="IntelliHub AI assistant with connected workflow panels"
-              className="h-[300px] w-full rounded-[1.5rem] object-cover mix-blend-multiply lg:h-[330px]"
-            />
+            <motion.div
+              animate={{ y: [0, -8, 0], rotate: [0, 0.35, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Image
+                src="/images/intellihub-hero.png"
+                width={1254}
+                height={1254}
+                priority={active === 0}
+                alt="IntelliHub AI assistant with connected workflow panels"
+                className="h-[300px] w-full rounded-[1.5rem] object-cover mix-blend-multiply lg:h-[330px]"
+              />
+            </motion.div>
             <div className="absolute inset-x-7 bottom-6 rounded-2xl border border-white/90 bg-white/90 p-3 shadow-lg backdrop-blur">
               <strong className="block text-sm text-navy">
                 {slide.visualTitle}
@@ -189,14 +196,21 @@ export function Hero() {
             </div>
           </div>
           <div className="absolute -right-4 top-5 grid gap-2 lg:-right-10">
-            {slide.badges.map(([Icon, label]) => (
-              <span
+            {slide.badges.map(([Icon, label], index) => (
+              <motion.span
                 key={label}
                 className="flex items-center gap-2 rounded-xl border bg-white/95 px-3 py-2 text-xs font-bold text-navy shadow-lg"
+                animate={{ x: [0, index % 2 ? -5 : 5, 0], y: [0, -3, 0] }}
+                transition={{
+                  duration: 3.6 + index * 0.45,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: index * 0.2,
+                }}
               >
                 <Icon className="size-4 text-brand" />
                 {label}
-              </span>
+              </motion.span>
             ))}
           </div>
         </motion.div>

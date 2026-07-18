@@ -2,7 +2,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bot, ChevronDown, LogOut, Menu, Sparkles, X } from "lucide-react";
+import {
+  ArrowRight,
+  Bot,
+  ChevronDown,
+  LogOut,
+  Menu,
+  MessageCircle,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/providers/app-providers";
 import { Button } from "./ui";
@@ -257,6 +266,72 @@ export function Protected({ children }: { children: React.ReactNode }) {
       </div>
     );
   return children;
+}
+export function FloatingChat() {
+  const { user } = useAuth();
+  const pathname = usePathname();
+  const [welcome, setWelcome] = useState(true);
+
+  if (["/chat", "/login", "/register"].includes(pathname)) return null;
+
+  const href = user ? "/chat" : "/login?next=%2Fchat";
+
+  return (
+    <aside
+      className="fixed bottom-5 right-4 z-[80] flex flex-col items-end gap-3 sm:bottom-7 sm:right-7"
+      aria-label="Chat with IntelliHub AI"
+    >
+      {welcome && (
+        <div className="chat-pop-in relative w-[min(330px,calc(100vw-2rem))] rounded-2xl border border-brand/15 bg-white p-4 pr-10 shadow-2xl shadow-brand/15">
+          <button
+            type="button"
+            aria-label="Dismiss chat welcome"
+            onClick={() => setWelcome(false)}
+            className="absolute right-2.5 top-2.5 grid size-7 place-items-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-navy"
+          >
+            <X className="size-4" />
+          </button>
+          <div className="flex gap-3">
+            <span className="relative grid size-10 shrink-0 place-items-center rounded-xl bg-brand text-white shadow-brand">
+              <Bot className="size-5" />
+              <i className="absolute -right-1 -top-1 size-3 rounded-full border-2 border-white bg-emerald-400" />
+            </span>
+            <div>
+              <strong className="text-sm text-navy">Hi! How can I help?</strong>
+              <p className="mt-1 text-xs leading-5 text-slate-500">
+                Ask our AI assistant anything about tools, content, or your
+                workflow.
+              </p>
+              <Link
+                href={href}
+                className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-brand hover:underline"
+              >
+                Start a free chat <ArrowRight className="size-3" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+      <Link
+        href={href}
+        className="chat-attention group relative flex h-14 items-center gap-3 rounded-full bg-brand px-4 text-white shadow-[0_16px_45px_rgba(109,74,255,.38)] transition hover:-translate-y-1 hover:bg-[#5b39ee] sm:h-16 sm:px-5"
+        aria-label="Chat now with the free AI assistant"
+      >
+        <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-brand/25 [animation-duration:2.4s]" />
+        <span className="grid size-9 place-items-center rounded-full bg-white/16 sm:size-10">
+          <MessageCircle className="size-5 fill-white/15" />
+        </span>
+        <span className="pr-1">
+          <strong className="block text-sm leading-none sm:text-base">
+            Chat now
+          </strong>
+          <span className="mt-1 block text-[10px] font-medium text-white/75 sm:text-xs">
+            Free AI assistant
+          </span>
+        </span>
+      </Link>
+    </aside>
+  );
 }
 export function PageHero({
   eyebrow,
