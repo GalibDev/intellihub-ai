@@ -201,18 +201,32 @@ export function Footer() {
             hello@intellihub.ai
           </a>
           <div className="mt-5 flex flex-wrap gap-2">
-            {[
-              [Facebook, "Facebook", "https://www.facebook.com/share/191EevSj7L/?mibextid=wwXIfr"],
-              [Linkedin, "LinkedIn", "https://www.linkedin.com/in/md-mirza-galib-palash/"],
-              [Globe, "Portfolio", "https://mirzagalib.xyz/"],
-              [MessageCircle, "WhatsApp", "https://wa.me/8801577088342"],
-              [Phone, "Call", "tel:+8801577088342"],
-            ] as const).map(([Icon, label, href]) => (
+            {(
+              [
+                [
+                  Facebook,
+                  "Facebook",
+                  "https://www.facebook.com/share/191EevSj7L/?mibextid=wwXIfr",
+                ],
+                [
+                  Linkedin,
+                  "LinkedIn",
+                  "https://www.linkedin.com/in/md-mirza-galib-palash/",
+                ],
+                [Globe, "Portfolio", "https://mirzagalib.xyz/"],
+                [MessageCircle, "WhatsApp", "https://wa.me/8801577088342"],
+                [Phone, "Call", "tel:+8801577088342"],
+              ] as const
+            ).map(([Icon, label, href]) => (
               <a
                 key={label as string}
                 href={href as string}
-                target={(href as string).startsWith("http") ? "_blank" : undefined}
-                rel={(href as string).startsWith("http") ? "noreferrer" : undefined}
+                target={
+                  (href as string).startsWith("http") ? "_blank" : undefined
+                }
+                rel={
+                  (href as string).startsWith("http") ? "noreferrer" : undefined
+                }
                 aria-label={label as string}
                 title={label as string}
                 className="grid size-10 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-300 transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand hover:text-white"
