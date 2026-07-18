@@ -34,7 +34,8 @@ export default function ChatPage() {
   const [sending, setSending] = useState(false);
   const [sidebar, setSidebar] = useState(false);
   const abort = useRef<AbortController | null>(null);
-  const end = useRef<HTMLDivElement>(null);
+  const inFlight = useRef(false);
+  const messageViewport = useRef<HTMLDivElement>(null);
   const conversations = useQuery({
     queryKey: ["conversations"],
     queryFn: () => api.get<Conversation[]>("/conversations"),
@@ -48,10 +49,13 @@ export default function ChatPage() {
     enabled: !!selected,
     queryFn: () => api.get<Message[]>(`/conversations/${selected}/messages`),
   });
-  useEffect(
-    () => end.current?.scrollIntoView({ behavior: "smooth" }),
-    [messages.data, sending],
-  );
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const viewport = messageViewport.current;
+      if (viewport) viewport.scrollTop = viewport.scrollHeight;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [messages.data?.length, sending]);
   const newChat = async () => {
     const item = await api.post<Conversation>("/conversations", {});
     await qc.invalidateQueries({ queryKey: ["conversations"] });
@@ -59,29 +63,31 @@ export default function ChatPage() {
     setSidebar(false);
   };
   const send = async (text = input) => {
-    if (!text.trim() || sending) return;
-    let id = selected;
-    if (!id) {
-      const item = await api.post<Conversation>("/conversations", {});
-      id = item._id;
-      setSelected(id);
-    }
+    const content = text.trim();
+    if (!content || inFlight.current) return;
+    inFlight.current = true;
     setInput("");
     setSending(true);
     abort.current = new AbortController();
-    qc.setQueryData<Message[]>(["messages", id], (old = []) => [
-      ...old,
-      {
-        _id: `temp-${Date.now()}`,
-        role: "user",
-        content: text,
-        createdAt: new Date().toISOString(),
-      },
-    ]);
+    let id = selected;
     try {
+      if (!id) {
+        const item = await api.post<Conversation>("/conversations", {});
+        id = item._id;
+        setSelected(id);
+      }
+      qc.setQueryData<Message[]>(["messages", id], (old = []) => [
+        ...old,
+        {
+          _id: `temp-${Date.now()}`,
+          role: "user",
+          content,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
       const assistant = await api.post<Message>(
         `/conversations/${id}/messages`,
-        { content: text },
+        { content },
         abort.current.signal,
       );
       qc.setQueryData<Message[]>(["messages", id], (old = []) => [
@@ -96,8 +102,10 @@ export default function ChatPage() {
             ? error.message
             : "Could not generate response",
         );
-      await qc.invalidateQueries({ queryKey: ["messages", id] });
+      if (id) await qc.invalidateQueries({ queryKey: ["messages", id] });
     } finally {
+      inFlight.current = false;
+      abort.current = null;
       setSending(false);
     }
   };
@@ -147,7 +155,7 @@ export default function ChatPage() {
                 <X />
               </button>
             </div>
-            <Button onClick={newChat} className="w-full">
+            <Button type="button" onClick={newChat} className="w-full">
               <MessageSquarePlus className="size-4" />
               New chat
             </Button>
@@ -203,7 +211,10 @@ export default function ChatPage() {
                 Context-aware and grounded in IntelliHub tools
               </p>
             </header>
-            <div className="flex-1 overflow-y-auto p-4 md:p-7">
+            <div
+              ref={messageViewport}
+              className="flex-1 overflow-y-auto p-4 md:p-7"
+            >
               {!messages.data?.length && !sending ? (
                 <div className="mx-auto flex h-full max-w-2xl flex-col items-center justify-center py-14 text-center">
                   <span className="grid size-16 place-items-center rounded-2xl bg-brand text-white shadow-brand">
@@ -220,7 +231,7 @@ export default function ChatPage() {
                     {prompts.map((prompt) => (
                       <button
                         type="button"
-                        onClick={() => send(prompt)}
+                        onClick={() => void send(prompt)}
                         className="rounded-xl border bg-white p-3 text-left text-sm hover:border-brand hover:text-brand"
                         key={prompt}
                       >
@@ -278,7 +289,7 @@ export default function ChatPage() {
                             {message === messages.data?.at(-1) && lastUser && (
                               <button
                                 type="button"
-                                onClick={() => send(lastUser)}
+                                onClick={() => void send(lastUser)}
                                 className="p-1 hover:text-brand"
                                 aria-label="Regenerate"
                               >
@@ -302,21 +313,20 @@ export default function ChatPage() {
                       </div>
                     </div>
                   )}
-                  <div ref={end} />
                 </div>
               )}
             </div>
             <div className="border-t bg-white p-4">
-              <div className="mx-auto flex max-w-3xl gap-2">
+              <form
+                className="mx-auto flex max-w-3xl gap-2"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void send();
+                }}
+              >
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      void send();
-                    }
-                  }}
                   placeholder="Type your message…"
                   disabled={sending}
                   className="h-12"
@@ -333,8 +343,7 @@ export default function ChatPage() {
                   </Button>
                 ) : (
                   <Button
-                    type="button"
-                    onClick={() => send()}
+                    type="submit"
                     disabled={!input.trim()}
                     className="h-12 w-12 px-0"
                     aria-label="Send"
@@ -342,7 +351,7 @@ export default function ChatPage() {
                     <Send className="size-4" />
                   </Button>
                 )}
-              </div>
+              </form>
               <p className="mt-2 text-center text-[10px] text-slate-400">
                 <Check className="mr-1 inline size-3" />
                 Recent context is limited for privacy and performance.
