@@ -10,7 +10,7 @@ export const verifyAccess = (token: string) => jwt.verify(token, env.JWT_ACCESS_
 export const verifyRefresh = (token: string) => jwt.verify(token, env.JWT_REFRESH_SECRET) as Payload;
 
 export function setAuthCookies(res: Response, access: string, refresh: string) {
-  const base = { httpOnly: true, secure: isProduction, sameSite: "lax" as const, path: "/" };
+  const base = { httpOnly: true, secure: isProduction, sameSite: isProduction ? "none" as const : "lax" as const, path: "/" };
   res.cookie("ih_access", access, { ...base, maxAge: 15 * 60 * 1000 });
   res.cookie("ih_refresh", refresh, { ...base, maxAge: 7 * 24 * 60 * 60 * 1000 });
 }

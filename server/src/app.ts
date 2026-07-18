@@ -20,7 +20,15 @@ function assertSafeKeys(value: unknown): void {
 export const app = express();
 app.set("trust proxy", 1);
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
-app.use(cors({ origin: env.CLIENT_URL, credentials: true, methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"] }));
+const allowedClientOrigin = env.CLIENT_URL.replace(/\/+$/, "");
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || origin.replace(/\/+$/, "") === allowedClientOrigin) callback(null, true);
+    else callback(new ApiError(403, "Origin is not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+}));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: false, limit: "1mb" }));
 app.use(cookieParser());

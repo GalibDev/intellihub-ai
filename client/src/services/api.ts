@@ -1,6 +1,7 @@
 import type { ApiResponse } from "@/types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const configuredApiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").replace(/\/+$/, "");
+const API_URL = configuredApiUrl.endsWith("/api") ? configuredApiUrl : `${configuredApiUrl}/api`;
 export class ApiClientError extends Error { constructor(message: string, public status: number, public details?: unknown) { super(message); } }
 
 async function request<T>(path: string, init: RequestInit = {}, retry = true): Promise<T> {
