@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
+    "prestart": "node dist/utils/seed.js",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
     "seed": "tsx src/utils/seed.ts"
