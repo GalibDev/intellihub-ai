@@ -79,15 +79,16 @@ export default function ChatPage() {
       },
     ]);
     try {
-      await api.post(
+      const assistant = await api.post<Message>(
         `/conversations/${id}/messages`,
         { content: text },
         abort.current.signal,
       );
-      await Promise.all([
-        qc.invalidateQueries({ queryKey: ["messages", id] }),
-        qc.invalidateQueries({ queryKey: ["conversations"] }),
+      qc.setQueryData<Message[]>(["messages", id], (old = []) => [
+        ...old,
+        assistant,
       ]);
+      void qc.invalidateQueries({ queryKey: ["conversations"] });
     } catch (error) {
       if (!(error instanceof DOMException && error.name === "AbortError"))
         toast.error(
@@ -122,6 +123,7 @@ export default function ChatPage() {
         <div className="mb-4 flex items-center justify-between lg:hidden">
           <h1 className="text-xl font-black">AI Chat Assistant</h1>
           <button
+            type="button"
             onClick={() => setSidebar(true)}
             className="grid size-10 place-items-center rounded-xl border"
           >
@@ -137,7 +139,11 @@ export default function ChatPage() {
           >
             <div className="mb-4 flex items-center justify-between">
               <strong>Conversations</strong>
-              <button className="lg:hidden" onClick={() => setSidebar(false)}>
+              <button
+                type="button"
+                className="lg:hidden"
+                onClick={() => setSidebar(false)}
+              >
                 <X />
               </button>
             </div>
@@ -160,6 +166,7 @@ export default function ChatPage() {
                     )}
                   >
                     <button
+                      type="button"
                       onClick={() => {
                         setSelected(item._id);
                         setSidebar(false);
@@ -169,6 +176,7 @@ export default function ChatPage() {
                       {item.title}
                     </button>
                     <button
+                      type="button"
                       aria-label="Rename"
                       onClick={() => rename(item)}
                       className="p-1 opacity-50 hover:opacity-100"
@@ -176,6 +184,7 @@ export default function ChatPage() {
                       <Pencil className="size-3.5" />
                     </button>
                     <button
+                      type="button"
                       aria-label="Delete"
                       onClick={() => remove(item)}
                       className="mr-2 p-1 text-red-500 opacity-50 hover:opacity-100"
@@ -210,6 +219,7 @@ export default function ChatPage() {
                   <div className="mt-7 grid w-full gap-2 sm:grid-cols-2">
                     {prompts.map((prompt) => (
                       <button
+                        type="button"
                         onClick={() => send(prompt)}
                         className="rounded-xl border bg-white p-3 text-left text-sm hover:border-brand hover:text-brand"
                         key={prompt}
@@ -255,6 +265,7 @@ export default function ChatPage() {
                         {message.role === "assistant" && (
                           <div className="mt-2 flex gap-1 border-t pt-2 text-slate-400">
                             <button
+                              type="button"
                               onClick={() => {
                                 navigator.clipboard.writeText(message.content);
                                 toast.success("Copied");
@@ -266,6 +277,7 @@ export default function ChatPage() {
                             </button>
                             {message === messages.data?.at(-1) && lastUser && (
                               <button
+                                type="button"
                                 onClick={() => send(lastUser)}
                                 className="p-1 hover:text-brand"
                                 aria-label="Regenerate"
@@ -300,7 +312,10 @@ export default function ChatPage() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) send();
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      void send();
+                    }
                   }}
                   placeholder="Type your message…"
                   disabled={sending}
@@ -308,6 +323,7 @@ export default function ChatPage() {
                 />
                 {sending ? (
                   <Button
+                    type="button"
                     variant="secondary"
                     onClick={() => abort.current?.abort()}
                     className="h-12 w-12 px-0"
@@ -317,6 +333,7 @@ export default function ChatPage() {
                   </Button>
                 ) : (
                   <Button
+                    type="button"
                     onClick={() => send()}
                     disabled={!input.trim()}
                     className="h-12 w-12 px-0"
