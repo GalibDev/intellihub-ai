@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { createHash } from "node:crypto";
 import { OAuth2Client } from "google-auth-library";
 import type { Request, Response } from "express";
 import { env } from "../config/env.js";
@@ -7,11 +8,12 @@ import { ApiError, ok } from "../utils/http.js";
 import { clearAuthCookies, setAuthCookies, signAccess, signRefresh, verifyRefresh } from "../utils/auth.js";
 
 const safeUser = (user: { _id: unknown; name: string; email: string; avatar?: string | null; role: string }) => ({ id: user._id, name: user.name, email: user.email, avatar: user.avatar || undefined, role: user.role });
+const hashRefreshToken = (token: string) => createHash("sha256").update(token).digest("hex");
 
 async function issueSession(res: Response, user: { _id: unknown; role: "user" | "admin" }) {
   const payload = { sub: String(user._id), role: user.role };
   const access = signAccess(payload); const refresh = signRefresh(payload);
-  const refreshTokenHash = await bcrypt.hash(refresh, 10);
+  const refreshTokenHash = hashRefreshToken(refresh);
   await User.findByIdAndUpdate(user._id, { refreshTokenHash });
   setAuthCookies(res, access, refresh);
 }
@@ -27,7 +29,8 @@ export async function register(req: Request, res: Response) {
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body as { email: string; password: string };
   const user = await User.findOne({ email }).select("+password");
-  if (!user?.password || !await bcrypt.compare(password, user.password)) throw new ApiError(401, "Incorrect email or password");
+  const passwordMatches = user?.password ? await bcrypt.compare(password, user.password).catch(() => false) : false;
+  if (!user || !passwordMatches) throw new ApiError(401, "Incorrect email or password");
   await issueSession(res, user);
   return ok(res, safeUser(user), "Welcome back");
 }
@@ -49,7 +52,7 @@ export async function refresh(req: Request, res: Response) {
   if (!token) throw new ApiError(401, "Session expired");
   const payload = verifyRefresh(token);
   const user = await User.findById(payload.sub).select("+refreshTokenHash");
-  if (!user?.refreshTokenHash || !await bcrypt.compare(token, user.refreshTokenHash)) throw new ApiError(401, "Session is no longer valid");
+  if (!user?.refreshTokenHash || hashRefreshToken(token) !== user.refreshTokenHash) throw new ApiError(401, "Session is no longer valid");
   await issueSession(res, user);
   return ok(res, safeUser(user), "Session refreshed");
 }

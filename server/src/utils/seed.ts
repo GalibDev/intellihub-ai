@@ -34,6 +34,7 @@ async function seed() {
   await connectDatabase();
   let demo = await User.findOne({ email: "demo@intellihub.ai" });
   if (!demo) demo = await User.create({ name: "Demo User", email: "demo@intellihub.ai", password: await bcrypt.hash("Demo12345!", 12), role: "user", avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Demo%20User" });
+  else await User.findByIdAndUpdate(demo._id, { password: await bcrypt.hash("Demo12345!", 12) });
   for (let i = 0; i < toolSeed.length; i++) {
     const [title, rawCategory, toolType, price, shortDescription, features] = toolSeed[i]!;
     const category = rawCategory === "chat" ? "Chat" : rawCategory;

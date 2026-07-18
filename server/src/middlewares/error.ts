@@ -7,6 +7,7 @@ import { isProduction } from "../config/env.js";
 export const notFound: RequestHandler = (req, _res, next) => next(new ApiError(404, `Route ${req.method} ${req.originalUrl} was not found`));
 
 export const errorHandler: ErrorRequestHandler = (error: unknown, _req, res, _next) => {
+  if (!(error instanceof ApiError) && !(error instanceof ZodError)) console.error(error instanceof Error ? error.stack : error);
   let status = 500; let message = "Something went wrong"; let details: unknown;
   if (error instanceof ApiError) { status = error.statusCode; message = error.message; details = error.details; }
   else if (error instanceof ZodError) { status = 422; message = "Validation failed"; details = error.flatten(); }
