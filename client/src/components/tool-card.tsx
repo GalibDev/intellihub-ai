@@ -23,6 +23,7 @@ export function ToolCard({ tool }: { tool: Tool }) {
     tool.slug === "ai-image-generator"
       ? "/ai/image-generator"
       : `/tools/${tool.slug}`;
+  const isImageGenerator = tool.slug === "ai-image-generator";
   return (
     <Card className="group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="relative aspect-[16/10] overflow-hidden bg-lavender">
@@ -59,18 +60,25 @@ export function ToolCard({ tool }: { tool: Tool }) {
               {tool.toolType}
             </span>
             <strong className="text-sm text-navy">
-              {tool.slug === "ai-image-generator"
-                ? "$10/month"
-                : money(tool.price)}
+              {isImageGenerator ? "2 free · then $10/mo" : money(tool.price)}
             </strong>
           </div>
-          <Link href={href}>
-            <Button className="h-9 px-3.5">
-              {tool.slug === "ai-image-generator"
-                ? "Create image"
-                : "View details"}
-            </Button>
-          </Link>
+          {isImageGenerator ? (
+            <div className="flex gap-2">
+              <Link href={href}>
+                <Button variant="secondary" className="h-9 px-3">
+                  Try free
+                </Button>
+              </Link>
+              <Link href="/ai/image-generator#pricing">
+                <Button className="h-9 px-3">Purchase</Button>
+              </Link>
+            </div>
+          ) : (
+            <Link href={href}>
+              <Button className="h-9 px-3.5">View details</Button>
+            </Link>
+          )}
         </div>
       </div>
     </Card>

@@ -174,42 +174,44 @@ export default function ImageGeneratorPage() {
             </form>
           </Card>
 
-          <Card className="overflow-hidden border-brand/25">
-            <div className="gradient-panel p-5 text-white">
-              <div className="flex items-center gap-2">
-                <Crown className="size-5" />
-                <strong>Image Pro</strong>
+          <div id="pricing" className="scroll-mt-24">
+            <Card className="overflow-hidden border-brand/25">
+              <div className="gradient-panel p-5 text-white">
+                <div className="flex items-center gap-2">
+                  <Crown className="size-5" />
+                  <strong>Image Pro</strong>
+                </div>
+                <div className="mt-3 flex items-end gap-1">
+                  <span className="text-3xl font-black">$10</span>
+                  <span className="pb-1 text-sm text-white/70">/month</span>
+                </div>
               </div>
-              <div className="mt-3 flex items-end gap-1">
-                <span className="text-3xl font-black">$10</span>
-                <span className="pb-1 text-sm text-white/70">/month</span>
+              <div className="p-5">
+                <div className="space-y-2 text-sm text-slate-600">
+                  {[
+                    "Unlimited generations",
+                    "All image sizes",
+                    "Commercial-ready downloads",
+                  ].map((item) => (
+                    <p key={item} className="flex items-center gap-2">
+                      <Check className="size-4 text-emerald-500" /> {item}
+                    </p>
+                  ))}
+                </div>
+                <Button
+                  type="button"
+                  onClick={upgrade}
+                  loading={upgrading}
+                  disabled={usage.data?.plan === "pro"}
+                  className="mt-5 w-full"
+                >
+                  {usage.data?.plan === "pro"
+                    ? "Your plan is active"
+                    : "Upgrade to Pro"}
+                </Button>
               </div>
-            </div>
-            <div className="p-5">
-              <div className="space-y-2 text-sm text-slate-600">
-                {[
-                  "Unlimited generations",
-                  "All image sizes",
-                  "Commercial-ready downloads",
-                ].map((item) => (
-                  <p key={item} className="flex items-center gap-2">
-                    <Check className="size-4 text-emerald-500" /> {item}
-                  </p>
-                ))}
-              </div>
-              <Button
-                type="button"
-                onClick={upgrade}
-                loading={upgrading}
-                disabled={usage.data?.plan === "pro"}
-                className="mt-5 w-full"
-              >
-                {usage.data?.plan === "pro"
-                  ? "Your plan is active"
-                  : "Upgrade to Pro"}
-              </Button>
-            </div>
-          </Card>
+            </Card>
+          </div>
         </div>
 
         <Card className="grid min-h-[650px] place-items-center overflow-hidden bg-slate-50 p-5 md:p-8">

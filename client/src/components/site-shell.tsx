@@ -368,6 +368,12 @@ export function FloatingChat() {
               >
                 Start a free chat <ArrowRight className="size-3" />
               </Link>
+              <Link
+                href="/ai/image-generator"
+                className="ml-3 mt-2 inline-flex items-center gap-1 text-xs font-bold text-fuchsia-600 hover:underline"
+              >
+                <Sparkles className="size-3" /> 2 free AI images
+              </Link>
             </div>
           </div>
         </div>

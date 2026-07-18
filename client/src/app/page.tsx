@@ -95,6 +95,33 @@ export default function Home() {
               </span>
             ))}
           </div>
+          <div className="relative mt-7 overflow-hidden rounded-2xl bg-gradient-to-r from-navy via-[#17245d] to-brand px-5 py-5 text-left text-white shadow-xl shadow-brand/15 sm:flex sm:items-center sm:justify-between sm:px-7">
+            <span className="absolute -right-8 -top-12 size-36 rounded-full bg-white/10 blur-2xl" />
+            <div className="relative flex items-center gap-4">
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-white/15">
+                <WandSparkles className="size-6" />
+              </span>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-[.18em] text-violet-200">
+                  New · No payment required
+                </span>
+                <h2 className="mt-1 text-lg font-black sm:text-xl">
+                  Generate your first 2 AI images completely free
+                </h2>
+                <p className="mt-1 text-xs text-white/65 sm:text-sm">
+                  Sign in, describe your idea, and download the finished image.
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/ai/image-generator"
+              className="relative mt-4 block sm:mt-0"
+            >
+              <Button className="w-full bg-white text-brand shadow-none hover:bg-lavender sm:w-auto">
+                Try 2 images free <ArrowRight className="size-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
       <section id="tools" className="section">
