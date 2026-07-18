@@ -13,12 +13,25 @@ import {
   WandSparkles,
 } from "lucide-react";
 import { Button, Card } from "@/components/ui";
-import { Capabilities, FeaturedTools, Hero, Newsletter } from "@/components/home-sections";
+import {
+  Capabilities,
+  FeaturedTools,
+  Hero,
+  Newsletter,
+} from "@/components/home-sections";
 
 const toolHighlights = [
-  [MessageSquareText, "AI Chat Assistant", "Grounded answers and route guidance"],
+  [
+    MessageSquareText,
+    "AI Chat Assistant",
+    "Grounded answers and route guidance",
+  ],
   [WandSparkles, "Content Generator", "On-brand content for five formats"],
-  [FileSearch, "Document Intelligence", "Summaries, actions, and extracted facts"],
+  [
+    FileSearch,
+    "Document Intelligence",
+    "Summaries, actions, and extracted facts",
+  ],
   [LineChart, "Data Analyzer", "Patterns and decision-ready insights"],
   [Bot, "Image Understanding", "Explain visual content clearly"],
   [BrainCircuit, "Smart Recommendations", "Tools ranked for your real goals"],
@@ -57,12 +70,30 @@ export default function Home() {
             Built to support modern teams at
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-x-12 gap-y-4 text-lg font-black text-slate-400">
-            <span>Google</span>
-            <span>Microsoft</span>
-            <span>Slack</span>
-            <span>Notion</span>
-            <span>Spotify</span>
-            <span>AWS</span>
+            {[
+              ["Google", "https://api.iconify.design/logos:google-icon.svg"],
+              [
+                "Microsoft",
+                "https://api.iconify.design/logos:microsoft-icon.svg",
+              ],
+              ["Slack", "https://api.iconify.design/logos:slack-icon.svg"],
+              ["Notion", "https://api.iconify.design/logos:notion-icon.svg"],
+              ["Spotify", "https://api.iconify.design/logos:spotify-icon.svg"],
+              ["AWS", "https://api.iconify.design/logos:aws.svg"],
+            ].map(([name, logo]) => (
+              <span
+                key={name}
+                className="group/brand flex items-center gap-2.5 text-sm font-bold text-slate-500 transition duration-300 hover:-translate-y-1 hover:text-navy"
+              >
+                <img
+                  src={logo}
+                  alt={`${name} logo`}
+                  loading="lazy"
+                  className={`${name === "AWS" ? "h-7 w-11" : "size-7"} object-contain transition duration-300 group-hover/brand:scale-110`}
+                />
+                {name}
+              </span>
+            ))}
           </div>
         </div>
       </section>

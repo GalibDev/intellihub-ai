@@ -65,6 +65,43 @@ button {
   );
   background-size: 22px 22px;
 }
+.live-card {
+  position: relative;
+  isolation: isolate;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.live-card::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 20% 0%,
+    rgba(109, 74, 255, 0.12),
+    transparent 38%
+  );
+  opacity: 0;
+  transform: translate3d(-8%, -8%, 0);
+  transition:
+    opacity 0.3s ease,
+    transform 0.45s ease;
+}
+.live-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(109, 74, 255, 0.28);
+  box-shadow:
+    0 20px 48px rgba(7, 21, 45, 0.12),
+    0 8px 24px rgba(109, 74, 255, 0.08);
+}
+.live-card:hover::after {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
 @keyframes chat-pop-in {
   from {
     opacity: 0;
@@ -101,6 +138,10 @@ button {
   }
   .hero-glow {
     transform: none !important;
+  }
+  .live-card,
+  .live-card::after {
+    transition: none;
   }
 }
 @media (max-width: 640px) {

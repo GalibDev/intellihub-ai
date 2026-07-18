@@ -10,6 +10,7 @@ import {
   Globe,
   Linkedin,
   LogOut,
+  Mail,
   Menu,
   MessageCircle,
   Phone,
@@ -199,6 +200,13 @@ export function Footer() {
             className="mt-4 block text-sm text-white"
           >
             hello@intellihub.ai
+          </a>
+          <a
+            href="mailto:mirza.galib.palash@gmail.com"
+            className="mt-2 flex items-center gap-2 text-sm text-white hover:text-brand"
+          >
+            <Mail className="size-4" />
+            mirza.galib.palash@gmail.com
           </a>
           <div className="mt-5 flex flex-wrap gap-2">
             {(
