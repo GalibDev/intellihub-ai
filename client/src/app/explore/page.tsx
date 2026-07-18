@@ -147,7 +147,7 @@ function ExploreContent() {
           {error ? (
             <ErrorState message={error.message} retry={refetch} />
           ) : (
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
               {isLoading ? (
                 Array.from({ length: 6 }, (_, i) => (
                   <Skeleton className="h-[410px]" key={i} />
@@ -203,7 +203,13 @@ function ExploreContent() {
 
 export default function ExplorePage() {
   return (
-    <Suspense fallback={<div className="container py-12"><Skeleton className="h-[620px]" /></div>}>
+    <Suspense
+      fallback={
+        <div className="container py-12">
+          <Skeleton className="h-[620px]" />
+        </div>
+      }
+    >
       <ExploreContent />
     </Suspense>
   );

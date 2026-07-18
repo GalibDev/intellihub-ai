@@ -162,12 +162,18 @@ For production, set `NODE_ENV=production`, use HTTPS so secure cookies are enabl
 
 ## Screenshots
 
-Add deployed desktop and mobile screenshots here after environment-backed QA. The original project hero artwork is stored at `client/public/images/intellihub-hero.png`.
+<p align="center">
+  <img src="docs/screenshots/home.jpg" alt="IntelliHub AI agentic workspace home page" width="49%" />
+  <img src="docs/screenshots/agentic-workspace.jpg" alt="IntelliHub AI content and document workflow" width="49%" />
+</p>
+
+The responsive landing experience includes an animated three-slide hero, clear workflow CTAs, a floating assistant, and direct access to two free image generations.
 
 ## Deployment and repositories
 
-- Live website: `https://your-intellihub-deployment.example`
-- Frontend repository: `https://github.com/your-org/intellihub-ai-client`
-- Backend repository: `https://github.com/your-org/intellihub-ai-server`
+- **Live website:** [intellihub-ai-client.vercel.app](https://intellihub-ai-client.vercel.app)
+- **GitHub monorepo:** [GalibDev/intellihub-ai](https://github.com/GalibDev/intellihub-ai)
+- **Frontend source:** [`client/`](https://github.com/GalibDev/intellihub-ai/tree/main/client)
+- **Backend source:** [`server/`](https://github.com/GalibDev/intellihub-ai/tree/main/server)
 
-Replace these placeholders after the first deployment.
+The frontend and backend live in one production monorepo with independent Vercel and Render deployments.

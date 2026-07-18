@@ -106,7 +106,7 @@ export function Hero() {
 
   return (
     <section
-      className="dot-grid relative h-[12cm] min-h-[420px] max-h-[12cm] overflow-hidden"
+      className="dot-grid relative h-[65svh] min-h-[420px] overflow-hidden"
       aria-roledescription="carousel"
       aria-label="IntelliHub AI highlights"
       onMouseEnter={() => setPaused(true)}

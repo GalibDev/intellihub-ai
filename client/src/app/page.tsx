@@ -67,7 +67,7 @@ export default function Home() {
       <section className="border-y bg-white">
         <div className="container py-7 text-center">
           <p className="text-xs font-bold uppercase tracking-[.18em] text-slate-400">
-            Built to support modern teams at
+            Familiar platforms in modern team workflows
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-x-12 gap-y-4 text-lg font-black text-slate-400">
             {[
@@ -208,10 +208,10 @@ export default function Home() {
       <section className="container">
         <div className="gradient-panel grid gap-px overflow-hidden rounded-3xl p-px text-white sm:grid-cols-2 lg:grid-cols-4">
           {[
-            ["10K+", "Active users"],
-            ["50K+", "AI generations"],
-            ["98%", "Satisfaction rate"],
-            ["24/7", "Workspace support"],
+            ["6", "Focused AI workflows"],
+            ["4", "Supported content formats"],
+            ["2+", "Agentic AI experiences"],
+            ["24/7", "Self-service workspace"],
           ].map(([value, label]) => (
             <div
               className="bg-white/5 p-7 text-center backdrop-blur"
@@ -245,37 +245,37 @@ export default function Home() {
         <div className="container">
           <div className="text-center">
             <h2 className="section-title !text-white">
-              What focused teams say
+              Built for practical AI work
             </h2>
             <p className="mt-3 text-slate-400">
-              Clearer workflows, faster first drafts, and decisions grounded in
-              context.
+              Focused workflows for common roles, without invented customer
+              claims.
             </p>
           </div>
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {[
               [
-                "Sarah Johnson",
-                "Content Director",
-                "IntelliHub transformed the way I create content. The chat assistant actually understands what I’m trying to achieve.",
+                "Content teams",
+                "Writing and campaigns",
+                "Create structured first drafts, refine tone and length, then export the result for review.",
               ],
               [
-                "Michael Chen",
-                "Data Analyst",
-                "The document workflow turns long stakeholder reports into an actionable brief in minutes.",
+                "Analysts",
+                "Documents and decisions",
+                "Turn long reports into summaries, key points, extracted information, and clear action items.",
               ],
               [
-                "Priya Sharma",
-                "Entrepreneur",
-                "Recommendations feel specific to my budget and experience, not like a generic list of popular apps.",
+                "Founders and operators",
+                "Tool selection",
+                "Compare AI tools using goals, experience, budget, favorites, activity, and direct feedback.",
               ],
             ].map(([name, role, quote]) => (
               <div
                 key={name}
                 className="rounded-2xl border border-white/10 bg-white/5 p-6"
               >
-                <div className="text-amber-400">★★★★★</div>
-                <p className="mt-4 leading-7 text-slate-300">“{quote}”</p>
+                <CheckCircle2 className="size-6 text-emerald-400" />
+                <p className="mt-4 leading-7 text-slate-300">{quote}</p>
                 <strong className="mt-5 block">{name}</strong>
                 <span className="text-xs text-slate-500">{role}</span>
               </div>
@@ -386,7 +386,8 @@ export default function Home() {
             Ready to transform your workflow?
           </h2>
           <p className="mt-3 text-slate-400">
-            Join thousands of users already working smarter with IntelliHub AI.
+            Create an account and start with focused tools, recommendations, and
+            two free AI images.
           </p>
           <Link href="/register">
             <Button className="mt-6 bg-white text-brand shadow-none hover:bg-lavender">

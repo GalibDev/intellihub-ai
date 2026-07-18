@@ -46,7 +46,11 @@ const toolInput = z.object({
   ]),
   price: z.coerce.number().min(0).max(100000),
   priority: z.enum(["Low", "Medium", "High"]),
-  imageUrl: z.url(),
+  imageUrl: z
+    .url()
+    .default(
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=85",
+    ),
   galleryImages: z.array(z.url()).max(8).default([]),
   features: z.array(z.string().min(2)).min(1).max(20),
   tags: z.array(z.string().min(1)).max(20),
