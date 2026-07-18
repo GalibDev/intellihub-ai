@@ -9,9 +9,35 @@ type WalkAiResponse = {
   error?: { message?: string } | string;
 };
 
+type WalkAiModelList = { data?: Array<{ id?: string }> };
+let resolvedWalkAiModel: string | undefined;
+
+async function resolveWalkAiModel(baseUrl: string) {
+  if (resolvedWalkAiModel) return resolvedWalkAiModel;
+  try {
+    const response = await fetch(`${baseUrl}/models`, {
+      headers: { "Authorization": `Bearer ${env.WALKAI_API_KEY}` },
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (!response.ok) return env.WALKAI_MODEL;
+    const payload = await response.json() as WalkAiModelList;
+    const models = payload.data?.map((item) => item.id?.trim()).filter((id): id is string => Boolean(id)) || [];
+    resolvedWalkAiModel = models.includes(env.WALKAI_MODEL)
+      ? env.WALKAI_MODEL
+      : models.find((id) => /gemini.*flash/i.test(id))
+        || models.find((id) => /gemini/i.test(id))
+        || models[0]
+        || env.WALKAI_MODEL;
+    return resolvedWalkAiModel;
+  } catch {
+    return env.WALKAI_MODEL;
+  }
+}
+
 async function generateWithWalkAi(prompt: string, systemInstruction?: string) {
   if (!env.WALKAI_API_KEY) throw new ApiError(503, "WalkAI is not configured. Add WALKAI_API_KEY to the server environment.");
   const baseUrl = env.WALKAI_BASE_URL.replace(/\/$/, "");
+  const model = await resolveWalkAiModel(baseUrl);
   const response = await fetch(`${baseUrl}/chat/completions`, {
     method: "POST",
     headers: {
@@ -19,7 +45,7 @@ async function generateWithWalkAi(prompt: string, systemInstruction?: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: env.WALKAI_MODEL,
+      model,
       messages: [
         ...(systemInstruction ? [{ role: "system", content: systemInstruction }] : []),
         { role: "user", content: prompt },
