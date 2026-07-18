@@ -36,6 +36,7 @@
     "multer": "^2.0.2",
     "pdf-parse": "^2.4.5",
     "slugify": "^1.6.6",
+    "stripe": "^22.3.2",
     "typescript": "^5.9.3",
     "zod": "^4.3.5"
   },
