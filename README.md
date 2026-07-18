@@ -1,6 +1,6 @@
 # IntelliHub AI
 
-IntelliHub AI is a full-stack agentic AI SaaS workspace for discovering AI tools, holding context-aware conversations, generating content, understanding documents, and receiving explainable recommendations. It uses a separate Next.js client and Express API, MongoDB persistence, secure cookie-based JWT sessions, and a modular Gemini service.
+IntelliHub AI is a full-stack agentic AI SaaS workspace for discovering AI tools, holding context-aware conversations, generating content, understanding documents, and receiving explainable recommendations. It uses a separate Next.js client and Express API, MongoDB persistence, secure cookie-based JWT sessions, and a modular AI provider service with WalkAI and direct Gemini support.
 
 ## Main features
 
@@ -83,6 +83,10 @@ JWT_ACCESS_SECRET=replace-with-at-least-32-random-characters
 JWT_REFRESH_SECRET=replace-with-another-32-random-characters
 JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=7d
+AI_PROVIDER=walkai
+WALKAI_API_KEY=
+WALKAI_BASE_URL=https://walkai.top/v1
+WALKAI_MODEL=gemini-2.5-flash
 GEMINI_API_KEY=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
@@ -92,10 +96,23 @@ MAX_FILE_SIZE_MB=10
 
 Never commit actual secrets. In production, use long random JWT secrets, HTTPS, a restricted CORS origin, and a managed secret store.
 
-## Gemini setup
+## AI provider setup
+
+WalkAI is the default provider. Add the key shown in your WalkAI dashboard only to `server/.env`:
+
+```env
+AI_PROVIDER=walkai
+WALKAI_API_KEY=sk-your-private-key
+WALKAI_BASE_URL=https://walkai.top/v1
+WALKAI_MODEL=gemini-2.5-flash
+```
+
+WalkAI controls which model names are available for each key group. If its **Use Key** instructions show a different model, replace only `WALKAI_MODEL`.
+
+For direct Google Gemini instead:
 
 1. Create a Gemini API key in Google AI Studio.
-2. Set `GEMINI_API_KEY` only in `server/.env`.
+2. Set `AI_PROVIDER=gemini` and `GEMINI_API_KEY` only in `server/.env`.
 3. Restart the Express server.
 
 The provider boundary lives in `server/src/services/ai.service.ts`. Add another provider by implementing the same text-generation behavior there; browser code never receives provider credentials.
