@@ -2,7 +2,7 @@
 
 IntelliHub AI is a full-stack agentic AI SaaS workspace for discovering AI tools, holding context-aware conversations, generating content, understanding documents, and receiving explainable recommendations. It uses a separate Next.js client and Express API, MongoDB persistence, secure cookie-based JWT sessions, and a modular AI provider service with WalkAI and direct Gemini support.
 
-## Main features
+## Main features.
 
 - Premium responsive landing page, reusable design system, navigation, footer, loading, empty, error, toast, modal, table, and pagination states
 - Backend-powered tool search, filtering, sorting, price/rating filters, and URL-persisted exploration state
