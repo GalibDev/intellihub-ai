@@ -17,7 +17,7 @@ IntelliHub AI is a full-stack agentic AI SaaS workspace for discovering AI tools
 - Blog, contact, profile, about, help, privacy, and terms pages
 - Helmet, scoped CORS, rate limiting, input validation, unsafe-key blocking, file validation, centralized errors, password hashing, and production-safe error responses
 
-## Technology
+## Technology...
 
 **Client:** Next.js App Router, React, TypeScript, Tailwind CSS, TanStack Query, React Hook Form, Zod, Recharts, Lucide, Framer Motion, Sonner.
 
