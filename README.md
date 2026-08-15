@@ -15,7 +15,7 @@ IntelliHub AI is a full-stack agentic AI SaaS workspace for discovering AI tools
 - Content generator for blog posts, product descriptions, social posts, email, and documentation with templates, length/tone controls, save, copy, regenerate, and TXT export
 - Memory-only PDF, DOCX, and TXT processing with type/size validation, structured analysis, and downloadable reports
 - Blog, contact, profile, about, help, privacy, and terms pages
-- Helmet, scoped CORS, rate limiting, input validation, unsafe-key blocking, file validation, centralized errors, password hashing, and production-safe error responses
+- Helmet, ,,,scoped CORS, rate limiting, input validation, unsafe-key blocking, file validation, centralized errors, password hashing, and production-safe error responses
 
 ## Technology...
 
